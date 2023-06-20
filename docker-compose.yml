@@ -5,7 +5,7 @@ services:
     image: mongo
     container_name: 'movieology-db'
     volumes:
-      - './databases:/data/db'
-    port: 
+      - './_databases:/data/db'
+    ports:
       - 27017:27017
     command: mongod

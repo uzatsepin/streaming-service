@@ -2,6 +2,8 @@ import axios from 'axios'
 import * as cheerio from 'cheerio';
 import { BASE_SEARCH_URL, RUTOR_URL } from './movies.const';
 import { extractMagnetFromQuery } from './movies.utils';
+import { Movie } from './movies.interfaces'
+import MovieEntity from './movies.model';
 
 export const movieSearch = async (searchTerm: string) => {
     const searchResult = await axios.get(`${BASE_SEARCH_URL}/${searchTerm}`)
@@ -21,5 +23,28 @@ export const movieSearch = async (searchTerm: string) => {
             torrentUrl,
         })
     }).filter(item => item.title)
-
 }
+
+export const create = async (input: Movie) => {
+    const item = new MovieEntity(input);
+    await item.save();
+    return item
+};
+
+export const update = (input: Partial<Movie>, id: string) => {
+    return MovieEntity.findByIdAndUpdate(id, input, {
+        new: true
+    })
+};
+
+export const findOne = (id: string) => {
+    return MovieEntity.findById(id)
+};
+
+export const findAll = () => {
+    return MovieEntity.find()
+};
+
+export const deleteOne = (id: string) => {
+    return MovieEntity.findByIdAndRemove(id)
+};

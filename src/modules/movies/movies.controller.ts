@@ -1,40 +1,30 @@
 import { Router } from 'express'
-import { SearchRequest } from './movies.interfaces'
-import axios from 'axios'
-import * as cheerio from 'cheerio';
-import {parse} from 'qs';
+import { CreateMovieRequest, SearchRequest } from './movies.interfaces'
+import * as movieService from './movies.servies'
 
 const router = Router()
 
-const BASE_SEARCH_URL = 'https://rutor.info/search/1/0/000/0'
-const MAGNET_KEY = 'magnet:?xt'
-const SPLIT_MAGNET_STRING = 'urn:btih:'
-const RUTOR_URL = 'https://rutor.info'
-
 router.get('/search', async ({ query: { searchTerm } }: SearchRequest, res) => {
   try {
-    const searchResult = await axios.get(`${BASE_SEARCH_URL}/${searchTerm}`)
-    const $ = cheerio.load(searchResult.data);
+    const results = await movieService.movieSearch(searchTerm)
+    res.status(200).send(results);
+  } catch (err) {
+    res.status(400).send(err)
+  }
+})
 
-    const data = $('#index tr').toArray();
-    const results = data.map(item => {
+router.post('/', async ({ body }: CreateMovieRequest, res) => {
+  try {
+    const result = await movieService.create(body)
+    res.status(200).send(result);
+  } catch (err) {
+    res.status(400).send(err)
+  }
+})
 
-        const [_, magnetTag, title] = $(item).find('a').toArray();
-        const magnetLink = $(magnetTag).attr('href');
-
-        const parsedMagnetLink = parse(magnetLink)
-
-        const magnet = String(parsedMagnetLink[MAGNET_KEY]).replace(SPLIT_MAGNET_STRING, '')
-        
-        const torrentUrl = `${RUTOR_URL}${$(title).attr('href')}`
-
-        return ({
-            magnet,
-            title: $(title).text(),
-            torrentUrl,
-        })
-    }).filter(item => item.title)
-
+router.get('/', async (_, res) => {
+  try {
+    const results = await movieService.findAll();
     res.status(200).send(results);
   } catch (err) {
     res.status(400).send(err)

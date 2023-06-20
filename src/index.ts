@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import logger from 'morgan';
 import * as path from 'path';
+import mongoose from 'mongoose';
+import 'dotenv/config';
 
 //routes
 import streamRouter from './modules/stream/stream.controller';
@@ -9,6 +11,14 @@ import contentRouter from './modules/content/content.controller';
 import moviesRouter from './modules/movies/movies.controller';
 
 
+try {
+    mongoose.connect(process.env.MONGO_URL).then(() => {
+        console.log('Database connected')
+    })
+} catch (error) {
+    console.warn('Connection to mongo failed', error)
+    throw error
+}
 
 //Middleware
 const app = express();
