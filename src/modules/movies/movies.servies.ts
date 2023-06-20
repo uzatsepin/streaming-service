@@ -1,9 +1,10 @@
 import axios from 'axios'
 import * as cheerio from 'cheerio';
-import { BASE_SEARCH_URL, RUTOR_URL } from './movies.const';
+import { BASE_SEARCH_URL, IMDB_SEARCH_URL, RUTOR_URL } from './movies.const'
 import { extractMagnetFromQuery } from './movies.utils';
 import { Movie } from './movies.interfaces'
 import MovieEntity from './movies.model';
+import {stringify} from 'qs';
 
 export const movieSearch = async (searchTerm: string) => {
     const searchResult = await axios.get(`${BASE_SEARCH_URL}/${searchTerm}`)
