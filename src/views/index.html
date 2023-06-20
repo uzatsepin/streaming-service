@@ -10,9 +10,12 @@
 <body>
     <div id="app">
         <video :src="videoUrl" controls autoplay></video>
+        <hr />
+        <input v-model="searchTerm" placeholder="Поиск фильма" type="search"/>
+        <button @click="findMovie">Найти</button>
         <ul>
             <li v-for="file in files" :key="file.magnet">
-                {{file.name}}
+                {{file.title}}
                 <button @click="play(file)">Play</button>
             </li>
         </ul>
@@ -23,18 +26,9 @@
     createApp({
         data() {
             return {
+                searchTerm: '',
                 activeVideo: {},
-                message: "hello vue",
-                files: [
-                    {
-                        magnet: '4475b5b4af2aa5e81a0929102c1c4ba4c9e6ef16',
-                        fileName: 'John.Wick.Chapter.4.2023.BDRip.AVC.Rip.by.HardwareMining.R.G.Generalfilm.mkv',
-                    },
-                    {
-                        magnet: '',
-                        fileName: '',
-                    }
-                ]
+                files: []
             }
         },
         computed: {
@@ -42,8 +36,15 @@
         },
         methods: {
            async play(file) {
-            const response = await axios.get(`/stream/add/${file.magnet}`)
-                this.activeVideo = file
+            const {data} = await axios.get(`/stream/add/${file.magnet}`)
+                this.activeVideo = {
+                    magnet: file.manget,
+                    fileName: data[0].name,
+                }
+            },
+            async findMovie(){
+                const response = await axios.get(`/movies/search?searchTerm=${this.searchTerm}`)
+                this.files = response.data;
             }
         }
     }).mount('#app')

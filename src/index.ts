@@ -6,6 +6,9 @@ import * as path from 'path';
 //routes
 import streamRouter from './modules/stream/stream.controller';
 import contentRouter from './modules/content/content.controller';
+import moviesRouter from './modules/movies/movies.controller';
+
+
 
 //Middleware
 const app = express();
@@ -16,10 +19,11 @@ app.use(logger('dev'))
 //endpoints
 app.use('/stream', streamRouter);
 app.use('/content', contentRouter);
+app.use('/movies', moviesRouter)
 
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
     console.log('Начинаем стримить');
-    console.log(`http://127.0.0.1:${PORT}`)
+    console.log(`http://localhost:${PORT}`)
 })
