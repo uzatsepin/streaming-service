@@ -30,10 +30,16 @@ const entity = new Schema<Movie>({
     type: String,
     default: ''
   },
-  actors: [{
+  actors: [
+    {
+      type: String,
+      default: ''
+    }
+  ],
+  backdrop: {
     type: String,
     default: ''
-  }],
+  },
   poster: {
     type: String,
     default: ''
@@ -70,10 +76,12 @@ const entity = new Schema<Movie>({
     type: String,
     default: ''
   },
-  genres: [{
-    type: String,
-    default: ''
-  }]
+  genres: [
+    {
+      type: String,
+      default: ''
+    }
+  ]
 })
 
 entity.index({
@@ -81,4 +89,4 @@ entity.index({
   writer: 'text'
 })
 
-export default model('movie', entity);
+export default model('movie', entity)
